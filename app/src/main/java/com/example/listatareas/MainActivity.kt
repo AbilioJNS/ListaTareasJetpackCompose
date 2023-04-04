@@ -5,26 +5,20 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.listatareas.R
 import com.example.listatareas.ui.theme.ListaTareasTheme
 
 class MainActivity : ComponentActivity() {
@@ -90,7 +84,8 @@ fun MessageCard(sms: Message){
             ) {
                 Text(
                     text = sms.body,
-                    modifier = Modifier.padding(all = 4.dp)
+                    modifier = Modifier
+                        .padding(all = 4.dp)
                         .clickable { isExpanded = !isExpanded },
                     // Si el mensaje esta expandido, mostramos todo su contenido
                     // de lo contrario, solo mostramos la primera línea
@@ -105,20 +100,70 @@ fun MessageCard(sms: Message){
 
 @Composable
 fun Conversacion(mensajes: List<Message>){
-    LazyColumn {
-        items(mensajes) { mensaje ->
-            MessageCard(mensaje)
+    Column() {
+        LazyColumn {
+            items(mensajes) { mensaje ->
+                MessageCard(mensaje)
+            }
+        }
+        tareaNueva()
+    }
+
+}
+
+@Composable
+fun tareaNueva() {
+
+    Row() {
+
+        Column(modifier = Modifier.padding(start = 20.dp)) {
+
+            var texto by remember {
+                mutableStateOf(TextFieldValue(""))
+            }
+            OutlinedTextField(
+                value = texto,
+                label = { Text(text = "Título tarea") },
+                onValueChange = { texto = it },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = MaterialTheme.colors.primary,
+                    focusedLabelColor = MaterialTheme.colors.primary)
+            )
+
+            var texto2 by remember {
+                mutableStateOf(TextFieldValue(""))
+            }
+            OutlinedTextField(
+                value = texto2,
+                onValueChange = { texto2 = it },
+                label = { Text(text = "Descripción") },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = MaterialTheme.colors.primary,
+                    focusedLabelColor = MaterialTheme.colors.primary)
+            )
+        }
+        Spacer(modifier = Modifier.width(10.dp))
+        Button(
+            onClick = {/*TODO*/},
+            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
+            modifier = Modifier.padding(top = 45.dp)
+
+        ) {
+            Text(text = "+")
         }
     }
 }
+
 
 @Preview
 @Composable
 fun PreviewConversacion() {
     ListaTareasTheme() {
         Conversacion(listOf(
-            Message("android","buen lenguaje de programación"),
-            Message("Jetpack Compose", "mejora muchisimo esta programación")
+            Message("Limpiar","Limpiar toda la casa, incluida la cocina, baños" +
+                    "y el polvo de las habitaciones y salón"),
+            Message("Planchar", "Planchar la ropa blanca y llevar cuidado con la " +
+                    "temperatura que hay prendas que podrían quemarse")
         ))
     }
 }
