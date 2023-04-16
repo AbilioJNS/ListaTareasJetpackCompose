@@ -5,11 +5,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -27,13 +26,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             ListaTareasTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    Conversacion(listOf(
-                        Message("Limpiar","Limpiar toda la casa, incluida la cocina, baños" +
-                                "y el polvo de las habitaciones y salón"),
-                        Message("Compra", "Hacer la compra de la lista que tenemos hecha") ,
-                        Message("Planchar", "Planchar la ropa blanca y llevar cuidado con la " +
-                                "temperatura que hay prendas que podrían quemarse")
-                    ))
+                    Conversacion()
                 }
             }
         }
@@ -43,7 +36,7 @@ class MainActivity : ComponentActivity() {
 data class Message(val autor: String, val body:String)
 
 @Composable
-fun MessageCard(sms: Message){
+fun MessageCard(sms: Message, index: Int){
     Row {
         //Guardamos el estado del check para modificar cuando checkeemos
         var isChecked by remember { mutableStateOf(false)}
@@ -80,7 +73,6 @@ fun MessageCard(sms: Message){
                 modifier = Modifier
                     .animateContentSize()
                     .padding(1.dp)
-
             ) {
                 Text(
                     text = sms.body,
@@ -99,71 +91,63 @@ fun MessageCard(sms: Message){
 }
 
 @Composable
-fun Conversacion(mensajes: List<Message>){
-    Column() {
-        LazyColumn {
-            items(mensajes) { mensaje ->
-                MessageCard(mensaje)
-            }
-        }
-        tareaNueva()
-    }
-
-}
-
-@Composable
-fun tareaNueva() {
-
-    Row() {
-
-        Column(modifier = Modifier.padding(start = 20.dp)) {
-
+fun Conversacion(){
+    val listaTareas = remember { mutableStateListOf<Message>() }
+    Column(modifier = Modifier.fillMaxHeight()) {
+        Row() {
             var texto by remember {
-                mutableStateOf(TextFieldValue(""))
+                mutableStateOf("")
             }
-            OutlinedTextField(
-                value = texto,
-                label = { Text(text = "Título tarea") },
-                onValueChange = { texto = it },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = MaterialTheme.colors.primary,
-                    focusedLabelColor = MaterialTheme.colors.primary)
-            )
-
             var texto2 by remember {
-                mutableStateOf(TextFieldValue(""))
+                mutableStateOf("")
             }
-            OutlinedTextField(
-                value = texto2,
-                onValueChange = { texto2 = it },
-                label = { Text(text = "Descripción") },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = MaterialTheme.colors.primary,
-                    focusedLabelColor = MaterialTheme.colors.primary)
-            )
-        }
-        Spacer(modifier = Modifier.width(10.dp))
-        Button(
-            onClick = {/*TODO*/},
-            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
-            modifier = Modifier.padding(top = 45.dp)
+            Column(modifier = Modifier.padding(start = 20.dp)) {
+                OutlinedTextField(
+                    value = texto,
+                    label = { Text(text = "Título tarea") },
+                    onValueChange = { texto = it },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = MaterialTheme.colors.primary,
+                        focusedLabelColor = MaterialTheme.colors.primary)
+                )
+                OutlinedTextField(
+                    value = texto2,
+                    onValueChange = { newText -> texto2 = newText },
+                    label = { Text(text = "Descripción") },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = MaterialTheme.colors.primary,
+                        focusedLabelColor = MaterialTheme.colors.primary)
+                )
+            }
+            Spacer(modifier = Modifier.width(10.dp))
+            Button(
+                onClick = {
+                    listaTareas.add(Message(texto,texto2))
+                    texto = ""
+                    texto2 = ""
 
-        ) {
-            Text(text = "+")
+                },
+                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
+                modifier = Modifier.padding(top = 45.dp)
+            ) {
+                Text(text = "+")
+            }
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        Surface() {
+            LazyColumn {
+                itemsIndexed(listaTareas){index, item ->
+                    MessageCard(sms = item, index)
+                }
+            }
         }
     }
 }
 
-
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewConversacion() {
-    ListaTareasTheme() {
-        Conversacion(listOf(
-            Message("Limpiar","Limpiar toda la casa, incluida la cocina, baños" +
-                    "y el polvo de las habitaciones y salón"),
-            Message("Planchar", "Planchar la ropa blanca y llevar cuidado con la " +
-                    "temperatura que hay prendas que podrían quemarse")
-        ))
+    ListaTareasTheme {
+        Conversacion()
     }
 }
