@@ -9,12 +9,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -94,14 +95,18 @@ fun MessageCard(sms: Message, index: Int){
 fun Conversacion(){
     val listaTareas = remember { mutableStateListOf<Message>() }
     Column(modifier = Modifier.fillMaxHeight()) {
-        Row() {
+        Row(modifier = Modifier.fillMaxWidth()) {
             var texto by remember {
                 mutableStateOf("")
             }
             var texto2 by remember {
                 mutableStateOf("")
             }
-            Column(modifier = Modifier.padding(start = 20.dp)) {
+            Column(modifier = Modifier
+                .weight(3f)
+                .padding(start = 20.dp)
+
+            ) {
                 OutlinedTextField(
                     value = texto,
                     label = { Text(text = "Título tarea") },
@@ -116,7 +121,8 @@ fun Conversacion(){
                     label = { Text(text = "Descripción") },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = MaterialTheme.colors.primary,
-                        focusedLabelColor = MaterialTheme.colors.primary)
+                        focusedLabelColor = MaterialTheme.colors.primary),
+                    modifier = Modifier.verticalScroll(rememberScrollState())
                 )
             }
             Spacer(modifier = Modifier.width(10.dp))
@@ -128,7 +134,10 @@ fun Conversacion(){
 
                 },
                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
-                modifier = Modifier.padding(top = 45.dp)
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(top=40.dp,end=10.dp)
+
             ) {
                 Text(text = "+")
             }
