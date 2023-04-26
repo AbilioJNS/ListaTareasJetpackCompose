@@ -5,8 +5,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 
 @Composable
-fun Pantalla1(){
+fun Pantalla1(titulo:String?){
     Column() {
-        Text(text = "Estmos en Pantalla1")
+        titulo?.let {
+            Text(text = "${it}")
+        }
+
     }
 }

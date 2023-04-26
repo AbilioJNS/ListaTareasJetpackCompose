@@ -14,19 +14,19 @@ sealed class menu_Items(
     ) {
     object items1:
     menu_Items(Icons.Default.Home,
-           "Inicio", "home"
+           "", "home"
         )
     object items3:
         menu_Items(Icons.Default.Search,
-            "Buscar","pantalla2"
+            "/Buscar","pantalla2"
         )
     object items2:
         menu_Items(Icons.Default.Share,
-            "Compartir","pantalla3"
+            "/Compartir","pantalla3"
         )
     object items4:
         menu_Items(Icons.Default.Send,
-            "Inicio", "pantalla4"
+            "/Enviar", "pantalla4"
         )
 }
 
